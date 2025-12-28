@@ -17,7 +17,8 @@ const HorizontalDateSelector: React.FC<Props> = ({ selectedDate, onSelectDate })
       full: d.toISOString().split('T')[0],
       dayName: d.toLocaleDateString('zh-TW', { weekday: 'short' }),
       dayNumber: d.getDate(),
-      month: d.getMonth() + 1
+      month: d.getMonth() + 1,
+      dayIndex: i + 1
     };
   });
 
@@ -32,19 +33,22 @@ const HorizontalDateSelector: React.FC<Props> = ({ selectedDate, onSelectDate })
           <button
             key={date.full}
             onClick={() => onSelectDate(date.full)}
-            className={`flex flex-col items-center justify-center min-w-[64px] h-20 rounded-2xl transition-all duration-300 transform ${
+            className={`flex flex-col items-center justify-center min-w-[68px] h-24 rounded-2xl transition-all duration-300 transform ${
               isSelected 
                 ? 'bg-[#438a84] text-white shadow-lg scale-105' 
                 : 'bg-[#f0f4f4] text-slate-500 hover:bg-[#e2ebeb]'
             }`}
           >
-            <span className={`text-[10px] font-medium mb-1 ${isSelected ? 'text-emerald-100' : 'text-slate-400'}`}>
+            <span className={`text-[9px] font-black uppercase mb-0.5 tracking-tighter ${isSelected ? 'text-emerald-200' : 'text-[#438a84]/60'}`}>
+              Day {date.dayIndex}
+            </span>
+            <span className={`text-[10px] font-medium mb-0.5 ${isSelected ? 'text-emerald-100' : 'text-slate-400'}`}>
               {date.dayName}
             </span>
-            <span className="text-xl font-bold">
+            <span className="text-xl font-bold leading-tight">
               {date.dayNumber}
             </span>
-            <span className={`text-[9px] mt-1 ${isSelected ? 'text-emerald-100' : 'text-slate-400'}`}>
+            <span className={`text-[9px] mt-0.5 ${isSelected ? 'text-emerald-100' : 'text-slate-400'}`}>
               {date.month}月
             </span>
           </button>

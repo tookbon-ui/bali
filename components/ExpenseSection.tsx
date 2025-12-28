@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
-import { Plus, Trash2, Users, DollarSign, Wallet, ArrowRight, CreditCard } from 'lucide-react';
-import { Expense, Member, Settlement } from '../types';
+import { Plus, Trash2, Users, DollarSign, Wallet, ArrowRight, CreditCard, RefreshCw } from 'lucide-react';
+import { Expense, Member, Settlement, Currency } from '../types';
 import { calculateSettlements } from '../utils/splitWise';
 
 interface Props {
@@ -13,14 +13,19 @@ interface Props {
 
 const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMembers }) => {
   const [isAdding, setIsAdding] = useState(false);
+  const [displayCurrency, setDisplayCurrency] = useState<Currency>('IDR');
   const [newExpense, setNewExpense] = useState({
     description: '',
     amount: '',
+    currency: 'IDR' as Currency,
     payerId: members[0]?.id || '',
     participantIds: members.map(m => m.id)
   });
 
-  const settlements = useMemo(() => calculateSettlements(expenses, members), [expenses, members]);
+  const settlements = useMemo(() => 
+    calculateSettlements(expenses, members, displayCurrency), 
+    [expenses, members, displayCurrency]
+  );
 
   const handleAdd = () => {
     if (!newExpense.description || !newExpense.amount) return;
@@ -28,6 +33,7 @@ const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMe
       id: Math.random().toString(36).substr(2, 9),
       description: newExpense.description,
       amount: parseFloat(newExpense.amount),
+      currency: newExpense.currency,
       payerId: newExpense.payerId,
       participantIds: newExpense.participantIds,
       date: new Date().toISOString().split('T')[0]
@@ -54,16 +60,29 @@ const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMe
     setExpenses(expenses.filter(e => e.id !== id));
   };
 
+  const getCurrencySymbol = (cur: Currency) => cur === 'IDR' ? 'Rp' : 'NT$';
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <section className="bg-[#2d5a57] p-6 rounded-[32px] text-white shadow-xl overflow-hidden relative">
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Wallet size={120} />
         </div>
-        <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
-          <DollarSign size={20} />
-          記帳匯總
-        </h2>
+        
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            <DollarSign size={20} />
+            分帳匯總
+          </h2>
+          <button 
+            onClick={() => setDisplayCurrency(prev => prev === 'IDR' ? 'TWD' : 'IDR')}
+            className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 transition-colors border border-white/10"
+          >
+            <RefreshCw size={12} />
+            切換至 {displayCurrency === 'IDR' ? '台幣' : '印尼盾'}
+          </button>
+        </div>
+
         {settlements.length === 0 ? (
           <p className="text-emerald-100/60 text-sm font-light">目前暫無記帳紀錄</p>
         ) : (
@@ -75,7 +94,12 @@ const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMe
                   <ArrowRight size={14} className="text-emerald-300" />
                   <span className="font-bold">{members.find(m => m.id === s.to)?.name}</span>
                 </div>
-                <span className="text-lg font-black text-emerald-300">Rp {s.amount.toLocaleString()}</span>
+                <div className="text-right">
+                  <span className="text-lg font-black text-emerald-300">
+                    {getCurrencySymbol(s.currency)} {s.amount.toLocaleString()}
+                  </span>
+                  <p className="text-[10px] text-emerald-100/40 mt-0.5">顯示幣別: {s.currency}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -96,6 +120,25 @@ const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMe
         <div className="bg-white p-6 rounded-[30px] shadow-sm border border-slate-100 space-y-4 animate-in slide-in-from-top-4 duration-300">
           <div className="space-y-4">
             <div>
+              <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">幣別選擇</label>
+              <div className="flex gap-2">
+                {(['IDR', 'TWD'] as Currency[]).map(cur => (
+                  <button
+                    key={cur}
+                    onClick={() => setNewExpense({...newExpense, currency: cur})}
+                    className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
+                      newExpense.currency === cur 
+                        ? 'bg-[#438a84] text-white shadow-md' 
+                        : 'bg-[#f4f7f6] text-slate-400'
+                    }`}
+                  >
+                    {cur === 'IDR' ? '印尼盾 IDR' : '台幣 TWD'}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <div>
               <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">項目名稱</label>
               <input 
                 placeholder="例如：晚餐、按摩費、車資..."
@@ -104,16 +147,22 @@ const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMe
                 className="w-full bg-[#f4f7f6] p-3 rounded-xl focus:ring-2 focus:ring-[#438a84] outline-none"
               />
             </div>
+            
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">金額 (Rp)</label>
-                <input 
-                  type="number"
-                  placeholder="0"
-                  value={newExpense.amount}
-                  onChange={e => setNewExpense({...newExpense, amount: e.target.value})}
-                  className="w-full bg-[#f4f7f6] p-3 rounded-xl focus:ring-2 focus:ring-[#438a84] outline-none"
-                />
+                <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">金額</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
+                    {getCurrencySymbol(newExpense.currency)}
+                  </span>
+                  <input 
+                    type="number"
+                    placeholder="0"
+                    value={newExpense.amount}
+                    onChange={e => setNewExpense({...newExpense, amount: e.target.value})}
+                    className="w-full bg-[#f4f7f6] pl-10 p-3 rounded-xl focus:ring-2 focus:ring-[#438a84] outline-none"
+                  />
+                </div>
               </div>
               <div>
                 <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">付款人</label>
@@ -128,6 +177,7 @@ const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMe
                 </select>
               </div>
             </div>
+
             <div>
               <label className="text-[10px] uppercase font-bold text-slate-400 mb-2 block">費用分攤成員</label>
               <div className="flex flex-wrap gap-2">
@@ -191,8 +241,8 @@ const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMe
                 </div>
               </div>
               <div className="text-right flex items-center gap-4">
-                <div className="text-lg font-black text-[#438a84]">
-                  Rp {exp.amount.toLocaleString()}
+                <div className="text-lg font-black text-[#438a84] whitespace-nowrap">
+                  {getCurrencySymbol(exp.currency)} {exp.amount.toLocaleString()}
                 </div>
                 <button 
                   onClick={() => handleDelete(exp.id)}

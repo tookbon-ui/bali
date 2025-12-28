@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Calendar, 
-  CreditCard
+  CreditCard,
+  CloudCheck
 } from 'lucide-react';
 import { ItineraryItem, Expense, Member } from './types';
 import HorizontalDateSelector from './components/HorizontalDateSelector';
@@ -17,18 +18,20 @@ const DEFAULT_MEMBERS: Member[] = [
 ];
 
 const INITIAL_ITINERARY: ItineraryItem[] = [
-  { id: 'b1', date: '2025-02-03', time: '10:00', location: '桃園機場 - BR255 起飛', note: '前往峇里島 (DPS)' },
-  { id: 'b2', date: '2025-02-03', time: '15:30', location: '抵達峇里島伍拉·賴機場', note: '包車司機接機' },
-  { id: 'b3', date: '2025-02-03', time: '17:00', location: 'Villa Check-in (水明漾)', note: '放行李、休息' },
-  { id: 'b4', date: '2025-02-03', time: '18:30', location: 'La Favela 晚餐', note: '水明漾著名餐酒館' },
-  { id: 'b5', date: '2025-02-04', time: '09:00', location: '烏布森林鞦韆', note: '拍美照行程' },
-  { id: 'b6', date: '2025-02-04', time: '14:00', location: '烏布皇宮 & 市場', note: '買手工藝品' },
+  { id: 'b1', date: '2025-02-03', time: '10:00', location: 'BR255 起飛 (Takeoff)', note: '桃園機場出發' },
+  { id: 'b2', date: '2025-02-03', time: '15:30', location: '抵達峇里島 (Landing)', note: '伍拉·賴國際機場' },
+  { id: 'b3', date: '2025-02-03', time: '18:00', location: '抵達飯店 (Hotel)', note: '入住手續與休息' },
+  { id: 'b4', date: '2025-02-03', time: '19:30', location: '晚餐：當地燒烤 (Barbecue)', note: '享受首晚美食' },
+  { id: 'b5', date: '2025-02-03', time: '21:00', location: '烏布森林鞦韆 (原 Day 2)', note: '調整至首日晚間' },
+  { id: 'b6', date: '2025-02-03', time: '22:00', location: '烏布皇宮 & 市場 (原 Day 2)', note: '感受晚間文化' },
   { id: 'b7', date: '2025-02-05', time: '16:00', location: '海神廟夕陽', note: '峇里島必看地標' },
 ];
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'itinerary' | 'expenses'>('itinerary');
   const [selectedDate, setSelectedDate] = useState<string>('2025-02-03');
+  const [lastSaved, setLastSaved] = useState<string>('');
+  
   const [members, setMembers] = useState<Member[]>(() => {
     const saved = localStorage.getItem('bali_members');
     return saved ? JSON.parse(saved) : DEFAULT_MEMBERS;
@@ -42,23 +45,30 @@ const App: React.FC = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
+  // 自動儲存邏輯與提示
   useEffect(() => {
     localStorage.setItem('bali_members', JSON.stringify(members));
-  }, [members]);
-
-  useEffect(() => {
     localStorage.setItem('bali_itinerary', JSON.stringify(itinerary));
-  }, [itinerary]);
-
-  useEffect(() => {
     localStorage.setItem('bali_expenses', JSON.stringify(expenses));
-  }, [expenses]);
+    
+    const now = new Date();
+    setLastSaved(`${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`);
+  }, [members, itinerary, expenses]);
 
   return (
     <div className="min-h-screen pb-24 text-slate-800 bg-[#f4f7f6]">
       <header className="bg-white px-6 pt-12 pb-6 shadow-sm rounded-b-[40px]">
-        <h1 className="text-2xl font-bold tracking-tight text-[#2d5a57]">峇里島極簡之旅</h1>
-        <p className="text-sm text-slate-400 mt-1 uppercase tracking-widest font-light">Bali Travel Log</p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-[#2d5a57]">峇里島極簡之旅</h1>
+            <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-light flex items-center gap-1">
+              Bali Travel Log • <span className="text-[#438a84] font-medium">已自動儲存 {lastSaved}</span>
+            </p>
+          </div>
+          <div className="bg-[#438a84]/10 p-2 rounded-full text-[#438a84]">
+            <CloudCheck size={20} />
+          </div>
+        </div>
         
         <div className="mt-8">
           <HorizontalDateSelector 
