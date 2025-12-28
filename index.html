@@ -15,7 +15,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#f4f7f6">
 
-    <!-- App 圖示 (暫用範例圖示) -->
+    <!-- App 圖示 -->
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/826/826070.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -27,19 +27,14 @@
             font-family: 'Noto Sans JP', 'Noto Sans TC', sans-serif;
             background-color: #f4f7f6;
             -webkit-tap-highlight-color: transparent;
-            /* 防止手機拉動網頁時的橡皮筋效果 */
             overflow-x: hidden;
             overscroll-behavior-y: none;
         }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* 針對瀏海屏/底線區的優化 */
         header { padding-top: calc(3rem + env(safe-area-inset-top)); }
         nav { padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); }
-
-        input, select, textarea { font-size: 16px !important; } /* 防止 iOS 自動縮放 */
-        
+        input, select, textarea { font-size: 16px !important; }
         .itinerary-line::before {
             content: '';
             position: absolute;
@@ -56,12 +51,16 @@
     "react": "https://esm.sh/react@^19.2.3",
     "react/": "https://esm.sh/react@^19.2.3/",
     "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
   }
 }
 </script>
 </head>
 <body>
     <div id="root"></div>
+    <!-- 這一行是啟動關鍵 -->
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>
