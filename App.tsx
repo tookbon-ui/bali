@@ -12,44 +12,44 @@ import ItinerarySection from './components/ItinerarySection';
 import ExpenseSection from './components/ExpenseSection';
 
 const DEFAULT_MEMBERS: Member[] = [
-  { id: '1', name: '我' },
-  { id: '2', name: '小明' },
-  { id: '3', name: '小華' }
+  { id: '1', name: 'Sherry' },
+  { id: '2', name: 'QQ' }
 ];
 
+const START_DATE = '2026-02-03';
+
 const INITIAL_ITINERARY: ItineraryItem[] = [
-  { id: 'b1', date: '2025-02-03', time: '10:00', location: 'BR255 起飛 (Takeoff)', note: '桃園機場出發' },
-  { id: 'b2', date: '2025-02-03', time: '15:30', location: '抵達峇里島 (Landing)', note: '伍拉·賴國際機場' },
-  { id: 'b3', date: '2025-02-03', time: '18:00', location: '抵達飯店 (Hotel)', note: '入住手續與休息' },
-  { id: 'b4', date: '2025-02-03', time: '19:30', location: '晚餐：當地燒烤 (Barbecue)', note: '享受首晚美食' },
-  { id: 'b5', date: '2025-02-03', time: '21:00', location: '烏布森林鞦韆 (原 Day 2)', note: '調整至首日晚間' },
-  { id: 'b6', date: '2025-02-03', time: '22:00', location: '烏布皇宮 & 市場 (原 Day 2)', note: '感受晚間文化' },
-  { id: 'b7', date: '2025-02-05', time: '16:00', location: '海神廟夕陽', note: '峇里島必看地標' },
+  { id: 'b1', date: '2026-02-03', time: '10:00', location: '桃園機場 (TPE) 出發', note: '搭乘華航/長榮直飛峇里島' },
+  { id: 'b2', date: '2026-02-03', time: '15:30', location: '抵達伍拉·賴國際機場 (DPS)', note: '領取行李與辦理落地簽' },
+  { id: 'b3', date: '2026-02-03', time: '18:00', location: '入住烏布森林 VILLA', note: '放鬆休息，享受叢林氣息' },
+  { id: 'b4', date: '2026-02-03', time: '19:30', location: '晚餐：Naughty Nuri\'s', note: '必吃碳烤豬肋排' },
+  { id: 'b5', date: '2026-02-04', time: '09:00', location: '德哥拉朗梯田', note: '早起拍梯田美景' },
+  { id: 'b6', date: '2026-02-04', time: '14:00', location: '聖泉寺', note: '體驗當地洗禮文化' },
+  { id: 'b7', date: '2026-02-05', time: '16:00', location: '海神廟夕陽', note: '海邊斷崖絕景' },
 ];
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'itinerary' | 'expenses'>('itinerary');
-  const [selectedDate, setSelectedDate] = useState<string>('2025-02-03');
+  const [selectedDate, setSelectedDate] = useState<string>(START_DATE);
   const [lastSaved, setLastSaved] = useState<string>('');
   
   const [members, setMembers] = useState<Member[]>(() => {
-    const saved = localStorage.getItem('bali_members');
+    const saved = localStorage.getItem('bali_2026_members');
     return saved ? JSON.parse(saved) : DEFAULT_MEMBERS;
   });
   const [itinerary, setItinerary] = useState<ItineraryItem[]>(() => {
-    const saved = localStorage.getItem('bali_itinerary');
+    const saved = localStorage.getItem('bali_2026_itinerary');
     return saved ? JSON.parse(saved) : INITIAL_ITINERARY;
   });
   const [expenses, setExpenses] = useState<Expense[]>(() => {
-    const saved = localStorage.getItem('bali_expenses');
+    const saved = localStorage.getItem('bali_2026_expenses');
     return saved ? JSON.parse(saved) : [];
   });
 
-  // 自動儲存邏輯與提示
   useEffect(() => {
-    localStorage.setItem('bali_members', JSON.stringify(members));
-    localStorage.setItem('bali_itinerary', JSON.stringify(itinerary));
-    localStorage.setItem('bali_expenses', JSON.stringify(expenses));
+    localStorage.setItem('bali_2026_members', JSON.stringify(members));
+    localStorage.setItem('bali_2026_itinerary', JSON.stringify(itinerary));
+    localStorage.setItem('bali_2026_expenses', JSON.stringify(expenses));
     
     const now = new Date();
     setLastSaved(`${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`);
@@ -60,9 +60,9 @@ const App: React.FC = () => {
       <header className="bg-white px-6 pt-12 pb-6 shadow-sm rounded-b-[40px]">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-[#2d5a57]">峇里島極簡之旅</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-[#2d5a57]">2026 峇里島之旅</h1>
             <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-light flex items-center gap-1">
-              Bali Travel Log • <span className="text-[#438a84] font-medium">已自動儲存 {lastSaved}</span>
+              Bali Adventure • <span className="text-[#438a84] font-medium">已儲存 {lastSaved}</span>
             </p>
           </div>
           <div className="bg-[#438a84]/10 p-2 rounded-full text-[#438a84]">

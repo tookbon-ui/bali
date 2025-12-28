@@ -1,12 +1,12 @@
 
 import { Expense, Member, Settlement, Currency } from '../types';
 
-// 固定匯率：1 TWD = 500 IDR (大約值，方便計算)
+// 固定匯率：1 TWD = 500 IDR (大約值)
 const EXCHANGE_RATE = 500;
 
 /**
  * 計算誰該給誰錢。
- * 所有金額會先轉換成 IDR 進行內部計算，最後再轉回指定的顯示幣別。
+ * 所有金額會先轉換成 IDR 進行內部計算。
  */
 export const calculateSettlements = (
   expenses: Expense[], 
@@ -15,24 +15,18 @@ export const calculateSettlements = (
 ): Settlement[] => {
   const balances: Record<string, number> = {};
   
-  // 初始化所有成員餘額
   members.forEach(m => balances[m.id] = 0);
 
-  // 計算淨餘額（統一轉換為 IDR）
   expenses.forEach(exp => {
     const amountInIDR = exp.currency === 'IDR' ? exp.amount : exp.amount * EXCHANGE_RATE;
-    
-    // 付款人獲得該總額
     balances[exp.payerId] += amountInIDR;
 
-    // 每個參與者分攤
     const share = amountInIDR / exp.participantIds.length;
     exp.participantIds.forEach(pId => {
       balances[pId] -= share;
     });
   });
 
-  // 區分債務人與債權人
   const debtors = Object.keys(balances)
     .filter(id => balances[id] < -0.01)
     .map(id => ({ id, amount: Math.abs(balances[id]) }))
@@ -54,7 +48,6 @@ export const calculateSettlements = (
     const settleAmountInIDR = Math.min(debtor.amount, creditor.amount);
     
     if (settleAmountInIDR > 0.01) {
-      // 轉換回顯示幣別
       const finalAmount = displayCurrency === 'IDR' 
         ? Math.round(settleAmountInIDR) 
         : Math.round(settleAmountInIDR / EXCHANGE_RATE);
@@ -69,6 +62,7 @@ export const calculateSettlements = (
       }
     }
 
+    // Fix: Corrected name 'settleAmountInJPY' to 'settleAmountInIDR' and removed duplicate subtraction logic.
     debtor.amount -= settleAmountInIDR;
     creditor.amount -= settleAmountInIDR;
 

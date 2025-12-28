@@ -10,7 +10,7 @@ const WeatherCard: React.FC = () => {
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        // 峇里島 (登巴薩) 座標: -8.6705, 115.2126
+        // 登巴薩座標: -8.6705, 115.2126
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-8.6705&longitude=115.2126&current_weather=true');
         const data = await res.json();
         setTemp(data.current_weather.temperature);

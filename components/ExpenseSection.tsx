@@ -79,7 +79,7 @@ const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMe
             className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 transition-colors border border-white/10"
           >
             <RefreshCw size={12} />
-            切換至 {displayCurrency === 'IDR' ? '台幣' : '印尼盾'}
+            顯示 {displayCurrency === 'IDR' ? '台幣' : '印尼盾'}
           </button>
         </div>
 
@@ -141,7 +141,7 @@ const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMe
             <div>
               <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">項目名稱</label>
               <input 
-                placeholder="例如：晚餐、按摩費、車資..."
+                placeholder="例如：晚餐、包車費、按摩..."
                 value={newExpense.description}
                 onChange={e => setNewExpense({...newExpense, description: e.target.value})}
                 className="w-full bg-[#f4f7f6] p-3 rounded-xl focus:ring-2 focus:ring-[#438a84] outline-none"
@@ -179,7 +179,7 @@ const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMe
             </div>
 
             <div>
-              <label className="text-[10px] uppercase font-bold text-slate-400 mb-2 block">費用分攤成員</label>
+              <label className="text-[10px] uppercase font-bold text-slate-400 mb-2 block">分攤對象</label>
               <div className="flex flex-wrap gap-2">
                 {members.map(m => (
                   <button
@@ -208,7 +208,7 @@ const ExpenseSection: React.FC<Props> = ({ expenses, setExpenses, members, setMe
               onClick={handleAdd}
               className="flex-2 px-8 py-3 bg-[#438a84] text-white rounded-xl font-medium"
             >
-              記錄開支
+              記錄
             </button>
           </div>
         </div>

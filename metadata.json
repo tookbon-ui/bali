@@ -1,6 +1,6 @@
 {
-  "name": "2026峇里島之旅",
-  "description": "日系極簡風格的峇里島旅遊規劃與分帳 App。",
+  "name": "2026 峇里島之旅",
+  "description": "日系極簡風格的 2026 峇里島旅遊規劃與分帳 App。",
   "requestFramePermissions": [
     "geolocation"
   ]

@@ -9,9 +9,9 @@ interface Props {
 const HorizontalDateSelector: React.FC<Props> = ({ selectedDate, onSelectDate }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 2025/02/03 開始的 7 天峇里島行程
+  // 2026/02/03 開始的 7 天行程
   const dates = Array.from({ length: 7 }).map((_, i) => {
-    const d = new Date(2025, 1, 3); // 月份從 0 開始，1 代表 2 月
+    const d = new Date(2026, 1, 3); // 月份從 0 開始，1 代表 2 月
     d.setDate(d.getDate() + i);
     return {
       full: d.toISOString().split('T')[0],
