@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>峇里島極簡之旅 | Bali Zen</title>
+    
+    <!-- iOS 全螢幕設定 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="峇里島之旅">
+    
+    <!-- Android 全螢幕設定 -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f4f7f6">
+
+    <!-- App 圖示 (暫用範例圖示) -->
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/826/826070.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Noto Sans TC', sans-serif;
+            background-color: #f4f7f6;
+            -webkit-tap-highlight-color: transparent;
+            /* 防止手機拉動網頁時的橡皮筋效果 */
+            overflow-x: hidden;
+            overscroll-behavior-y: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 針對瀏海屏/底線區的優化 */
+        header { padding-top: calc(3rem + env(safe-area-inset-top)); }
+        nav { padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); }
+
+        input, select, textarea { font-size: 16px !important; } /* 防止 iOS 自動縮放 */
+        
+        .itinerary-line::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 24px;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #438a84 0%, transparent 100%);
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>

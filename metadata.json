@@ -1,0 +1,7 @@
+{
+  "name": "峇里島極簡之旅",
+  "description": "日系極簡風格的峇里島旅遊規劃與分帳 App。",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
