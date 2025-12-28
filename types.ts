@@ -30,8 +30,3 @@ export interface Settlement {
   amount: number;
   currency: Currency;
 }
-
-export interface WeatherData {
-  temp: number;
-  condition: string;
-}

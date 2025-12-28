@@ -1,12 +1,11 @@
 
 import { Expense, Member, Settlement, Currency } from '../types';
 
-// 固定匯率：1 TWD = 500 IDR (大約值)
+// 假設匯率：1 TWD = 500 IDR (大約值)
 const EXCHANGE_RATE = 500;
 
 /**
- * 計算誰該給誰錢。
- * 所有金額會先轉換成 IDR 進行內部計算。
+ * 計算分帳。
  */
 export const calculateSettlements = (
   expenses: Expense[], 
@@ -18,10 +17,11 @@ export const calculateSettlements = (
   members.forEach(m => balances[m.id] = 0);
 
   expenses.forEach(exp => {
-    const amountInIDR = exp.currency === 'IDR' ? exp.amount : exp.amount * EXCHANGE_RATE;
-    balances[exp.payerId] += amountInIDR;
+    // 轉換為台幣統一計算
+    const amountInTWD = exp.currency === 'TWD' ? exp.amount : exp.amount / EXCHANGE_RATE;
+    balances[exp.payerId] += amountInTWD;
 
-    const share = amountInIDR / exp.participantIds.length;
+    const share = amountInTWD / exp.participantIds.length;
     exp.participantIds.forEach(pId => {
       balances[pId] -= share;
     });
@@ -45,12 +45,12 @@ export const calculateSettlements = (
     const debtor = debtors[dIdx];
     const creditor = creditors[cIdx];
     
-    const settleAmountInIDR = Math.min(debtor.amount, creditor.amount);
+    const settleAmountInTWD = Math.min(debtor.amount, creditor.amount);
     
-    if (settleAmountInIDR > 0.01) {
-      const finalAmount = displayCurrency === 'IDR' 
-        ? Math.round(settleAmountInIDR) 
-        : Math.round(settleAmountInIDR / EXCHANGE_RATE);
+    if (settleAmountInTWD > 0.01) {
+      const finalAmount = displayCurrency === 'TWD' 
+        ? Math.round(settleAmountInTWD) 
+        : Math.round(settleAmountInTWD * EXCHANGE_RATE);
 
       if (finalAmount > 0) {
         settlements.push({
@@ -62,9 +62,8 @@ export const calculateSettlements = (
       }
     }
 
-    // Fix: Corrected name 'settleAmountInJPY' to 'settleAmountInIDR' and removed duplicate subtraction logic.
-    debtor.amount -= settleAmountInIDR;
-    creditor.amount -= settleAmountInIDR;
+    debtor.amount -= settleAmountInTWD;
+    creditor.amount -= settleAmountInTWD;
 
     if (debtor.amount < 0.01) dIdx++;
     if (creditor.amount < 0.01) cIdx++;
